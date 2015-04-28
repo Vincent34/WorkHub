@@ -1,0 +1,48 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="test.vc.workhub.group"
+    android:id="@+id/fragment_group">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                style="?android:borderlessButtonStyle"
+                android:id="@+id/btn_creategroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/create_group"
+                android:layout_weight="1"
+                android:onClick="onClickCreateGroup" />
+
+            <Button
+                style="?android:borderlessButtonStyle"
+                android:id="@+id/btn_joingroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/join_group"
+                android:layout_weight="1"
+                android:onClick="onClickJoinGroup" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#222222" />
+
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</FrameLayout>
