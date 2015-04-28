@@ -20,6 +20,14 @@ public class MySimpleAdapter extends SimpleAdapter {
         super(context, data, resource, from, to);
     }
 
+    /**
+     * Change the background for interfacing list item.
+     *
+     * @param position    as super
+     * @param convertView as super
+     * @param parent      as super
+     * @return as super
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = super.getView(position, convertView, parent);

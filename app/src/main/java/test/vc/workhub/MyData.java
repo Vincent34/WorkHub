@@ -23,6 +23,9 @@ public class MyData {
     private static SQLiteHelper sqLiteHelper;
     private static String cookie;
 
+    /**
+     * update the whole database from the server.Which will initialize the whole database on the client.
+     */
     public static void update() {
         ContentValues cv = new ContentValues();
         cv.putNull("user_id");
@@ -68,6 +71,9 @@ public class MyData {
         MainActivity.handler.sendMessage(msg);
     }
 
+    /**
+     * Fetch the data of the user from the server.
+     */
     public static void updateSelf() {
         try {
             String rstsrc = NetHelper.requestPost("/Self/Info", null, null);
@@ -86,6 +92,9 @@ public class MyData {
         }
     }
 
+    /**
+     * Fetch the data of the group that relate to the current user from the server.
+     */
     public static void updateGroup() {
         try {
             String rstsrc = NetHelper.requestPost("/Group/List", null, null);
@@ -107,6 +116,9 @@ public class MyData {
         }
     }
 
+    /**
+     * Fetch the data of the task that relate to the current user from the server.
+     */
     public static void updateTask() {
         try {
             String rstsrc = NetHelper.requestPost("/Task/List", null, null);
@@ -131,33 +143,50 @@ public class MyData {
         }
     }
 
-    public static void updateReply() {
-
-    }
-
+    /**
+     * Set the database for Mydata.
+     *
+     * @param _sqLiteHelper One sqLiteHelper for the local database.
+     */
     public static void setSQLiteDataBase(SQLiteHelper _sqLiteHelper) {
         sqLiteHelper = _sqLiteHelper;
         db = sqLiteHelper.getWritableDatabase();
     }
 
+    /**
+     * Push the new cookie into the database.
+     * @param cookiesrc Cookie expressed in string.
+     */
     public static void setCookie(String cookiesrc) {
         ContentValues cv = new ContentValues();
         cv.put("cookie", cookiesrc);
         db.update("me", cv, "id=0", null);
     }
 
+    /**
+     * Fetch the cookie from the database.
+     * @return Cookie expressed in string.
+     */
     public static String getCookie() {
         Cursor cursor = db.query("me", null, "id=0", null, null, null, null);
         cursor.moveToFirst();
         return cursor.getString(cursor.getColumnIndex("cookie"));
     }
 
+    /**
+     * Get the userId for the current user from the local database.
+     * @return UserId for the current user.
+     */
     public static int getUserId() {
         Cursor cursor = db.query("me", null, "id=0", null, null, null, null);
         cursor.moveToFirst();
         return cursor.getInt(cursor.getColumnIndex("user_id"));
     }
 
+    /**
+     * Get the username for the current user from the local database.
+     * @return username for the current user.
+     */
     public static String getUsername() {
         Cursor cursor = db.query("me", null, "id=0", null, null, null, null);
         cursor.moveToFirst();
@@ -166,6 +195,10 @@ public class MyData {
         return rst;
     }
 
+    /**
+     * Get the nickname for the current user from the local database.
+     * @return nickname for the current user.
+     */
     public static String getNickname() {
         Cursor cursor = db.query("me", null, "id=0", null, null, null, null);
         cursor.moveToFirst();
@@ -174,6 +207,10 @@ public class MyData {
         return rst;
     }
 
+    /**
+     * Get the telephone number for the current user from the local database.
+     * @return telephone number for the current user.
+     */
     public static String getTel() {
         Cursor cursor = db.query("me", null, "id=0", null, null, null, null);
         cursor.moveToFirst();
@@ -182,6 +219,10 @@ public class MyData {
         return rst;
     }
 
+    /**
+     * Get the data of the group that relate to the current user from the local database.
+     * @return A list of data for each group including group name, group id, creator name, whether the job has been done in the group.
+     */
     public static List<HashMap<String, Object>> getGroupData() {
         ArrayList<HashMap<String, Object>> groupData = new ArrayList<HashMap<String, Object>>();
         Cursor cursor = db.query("mygroup", null, null, null, null, null, null);
@@ -204,12 +245,24 @@ public class MyData {
         return groupData;
     }
 
+    /**
+     * Get the creator id for the specific group.
+     * @param groupId group id to determine the group.
+     * @return the user if for the creator of the group
+     */
     public static int getGroupCreator(int groupId) {
         Cursor cursor = db.query("mygroup", null, "id=?", new String[]{String.valueOf(groupId)}, null, null, null);
         cursor.moveToFirst();
         return cursor.getInt(cursor.getColumnIndex("creator_id"));
     }
 
+    /**
+     * Search the group from the server with specific keyword.
+     * @param name the keyword of the group name used to search on the server
+     * @param limit the number of the return item.
+     * @param offset the offset of the result in the whole data.
+     * @return A list of data for each group in the search result.
+     */
     public static List<HashMap<String, Object>> searchGroup(final String name, final int limit, final int offset) {
         final List<HashMap<String, Object>> groupData = new ArrayList<>();
         Thread searchThread = new Thread(new Runnable() {
@@ -241,6 +294,10 @@ public class MyData {
         return groupData;
     }
 
+    /**
+     * Get the task data that relate to the current user from the local database.
+     * @return A list of data for each task including taskid, title of the task, type of the task, creator of the task, the duetime of the task.
+     */
     public static List<HashMap<String, Object>> getTaskData() {
         List<HashMap<String, Object>> taskData = new ArrayList<HashMap<String, Object>>();
 
@@ -249,7 +306,6 @@ public class MyData {
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("id", cursor.getInt(cursor.getColumnIndex("id")));
             map.put("title", cursor.getString(cursor.getColumnIndex("title")));
-            map.put("type", "Task");
             map.put("creator_name", cursor.getString(cursor.getColumnIndex("creator_name")));
             map.put("due_time", cursor.getString(cursor.getColumnIndex("due_time")));
             taskData.add(map);
@@ -258,6 +314,11 @@ public class MyData {
         return taskData;
     }
 
+    /**
+     * Get the data of the specific task.
+     * @param taskId the task id to determine the task
+     * @return teh data of the task including title, content, creator nickname.
+     */
     public static HashMap<String, Object> getTaskData(int taskId) {
         HashMap<String, Object> taskData = new HashMap<String, Object>();
         Cursor cursor = db.query("mytask", new String[]{"title", "content", "creator_name"}, "id=?", new String[]{String.valueOf(taskId)},
@@ -270,6 +331,11 @@ public class MyData {
         return taskData;
     }
 
+    /**
+     * Get all the reply data for specific task.
+     * @param taskId the task id to determine the task
+     * @return the data of the reply including replier, content of the reply.
+     */
     public static List<HashMap<String, Object>> getReplyData(final int taskId) {
         final List<HashMap<String, Object>> replyData = new ArrayList<HashMap<String, Object>>();
         HashMap<String, Object> map;
@@ -313,6 +379,11 @@ public class MyData {
         return replyData;
     }
 
+    /**
+     * Get the data of the member that belong to specific group.
+     * @param groupId group id to determine the group.
+     * @return the member data including member id, member nickname, member telephone number.
+     */
     public static List<HashMap<String, Object>> getMemberName(final int groupId) {
         final boolean ok = false;
         final List<HashMap<String, Object>> memberData = new ArrayList<HashMap<String, Object>>();
@@ -346,6 +417,10 @@ public class MyData {
         return memberData;
     }
 
+    /**
+     * Get all application that need the current user to decide.
+     * @return A list of data for each application including applier username, applier nickname, applier userid, group name, application id.
+     */
     public static List<HashMap<String, Object>> getApplication() {
         final List<HashMap<String, Object>> data = new ArrayList<>();
         Thread thread = new Thread(new Runnable() {

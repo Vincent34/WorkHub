@@ -23,7 +23,6 @@ import java.util.List;
  */
 public class TaskActivity extends Activity {
     private int id;
-    private String title, content, type;
     HashMap<String, Object> data;
     Handler handler;
 
@@ -33,7 +32,6 @@ public class TaskActivity extends Activity {
         setContentView(R.layout.activity_task);
         Bundle args = getIntent().getExtras();
         id = args.getInt("id");
-        type = args.getString("type");
         TextView titleTextView = (TextView) findViewById(R.id.textview_task_title);
         TextView contentTextView = (TextView) findViewById(R.id.textview_task_content);
         TextView userTextView = (TextView) findViewById(R.id.textview_task_creator);
