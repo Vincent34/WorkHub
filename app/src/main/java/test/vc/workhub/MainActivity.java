@@ -441,6 +441,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                 case R.id.layout_group_item:
                     intent = new Intent("vc.workhub.Group");
                     args.putString("group_name", ((HashMap<String, Object>) l.getAdapter().getItem(position)).get("group_name").toString());
+                    args.putString("creator_name", ((HashMap<String, Object>) l.getAdapter().getItem(position)).get("creator_name").toString());
                     args.putInt("group_id", (int) (((HashMap<String, Object>) l.getAdapter().getItem(position)).get("group_id")));
                     intent.putExtras(args);
                     startActivity(intent);
@@ -487,6 +488,10 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
             Bundle args = getArguments();
             switch (args.getInt(ARG_SECTION_NUMBER)) {
                 case 1:
+                    setListAdapter(new MySimpleAdapter(getActivity(), MyData.getApplication(), R.layout.listview_item_application,
+                            new String[]{"group_name", "username", "name"},
+                            new int[]{R.id.application_group_name, R.id.application_username, R.id.application_nickname}));
+
                     break;
                 case 2:
                     setListAdapter(new MySimpleAdapter(getActivity(), MyData.getTaskData(), R.layout.listview_item_task,
@@ -509,9 +514,9 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                     ((TextView) (getActivity().findViewById(R.id.textview_username))).setText(MyData.getUsername());
                     ((TextView) (getActivity().findViewById(R.id.textview_nick_name))).setText(MyData.getNickname());
                     ((TextView) (getActivity().findViewById(R.id.textview_tel))).setText(MyData.getTel());
-                    setListAdapter(new MySimpleAdapter(getActivity(), MyData.getApplication(), R.layout.listview_item_application,
-                            new String[]{"group_name", "username", "name"},
-                            new int[]{R.id.application_group_name, R.id.application_username, R.id.application_nickname}));
+//                    setListAdapter(new MySimpleAdapter(getActivity(), MyData.getApplication(), R.layout.listview_item_application,
+//                            new String[]{"group_name", "username", "name"},
+//                            new int[]{R.id.application_group_name, R.id.application_username, R.id.application_nickname}));
                     break;
                 case 2:
                     setListAdapter(new MySimpleAdapter(getActivity(), MyData.getTaskData(), R.layout.listview_item_task,

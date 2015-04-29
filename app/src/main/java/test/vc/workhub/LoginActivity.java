@@ -58,7 +58,6 @@ public class LoginActivity extends Activity {
                     msg.what = TOAST_SHOW;
                     msg.obj = result.getString("data");
                     handler.sendMessage(msg);
-                    textViewMessage.setText(result.getString("data"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -28,6 +28,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, version);
     }
 
+    /**
+     * Initialize the database when the application is first run.
+     *
+     * @param db the new database.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_ME);
@@ -37,6 +42,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_REPLY);
     }
 
+    /**
+     * When update the database, drop all the old database and create a new one.
+     * @param db as super
+     * @param oldVersion as super
+     * @param newVersion as super
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w("TaskDBAdapter", "Upgrade database from Version" + oldVersion + " to Version" + newVersion);

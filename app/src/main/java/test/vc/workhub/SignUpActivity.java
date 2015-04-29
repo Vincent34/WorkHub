@@ -42,17 +42,9 @@ public class SignUpActivity extends Activity {
                         String rstsrc = NetHelper.requestPost("/Act/Reg", new String[]{"Username", "Password"},
                                 new String[]{editTextUsername.getText().toString(), editTextPassword.getText().toString()});
                         JSONObject result = new JSONObject(rstsrc);
-                        textViewMessage.setText(result.getString("data"));
                         Message msg = new Message();
                         msg.obj = result.getString("data");
                         handler.sendMessage(msg);
-                        if (result.getString("desc").equals("0")) {
-                            String rst = NetHelper.requestPost("/Act/Login", new String[]{"Username", "Password"},
-                                    new String[]{editTextUsername.getText().toString(), editTextPassword.getText().toString()});
-                            JSONObject loginResult = new JSONObject(rstsrc);
-                            msg.obj = loginResult.getString("data");
-                            handler.sendMessage(msg);
-                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

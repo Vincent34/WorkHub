@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
@@ -31,6 +32,7 @@ public class NetHelper {
     boolean loginValidate;
 
     /**
+     * Perform net request by http post.
      * @param path   sub path of the request.
      * @param keys   the keys in the entity
      * @param values the values in the entity, need to be match the keys in order.
@@ -49,6 +51,7 @@ public class NetHelper {
         httpPost.setEntity(httpEntity);
         httpPost.setHeader("Cookie", MyData.getCookie());
         HttpClient httpClient = new DefaultHttpClient();
+        httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
         HttpResponse httpResponse = httpClient.execute(httpPost);
         if (httpResponse.getStatusLine().getStatusCode() == 200) {
             String rstsrt = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
@@ -62,6 +65,36 @@ public class NetHelper {
         }
     }
 
+    /**
+     * perform http request by http get.
+     *
+     * @param path the path of the request
+     * @return the result of the request as string.
+     * @throws Exception
+     */
+    public static String requestGet(String path) throws Exception {
+        HttpGet httpGet = new HttpGet(PATH + path);
+        HttpClient httpClient = new DefaultHttpClient();
+        httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
+        HttpResponse httpResponse = httpClient.execute(httpGet);
+        if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            String rstsrc = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+            Header header = httpResponse.getFirstHeader("Set-Cookie");
+            if (header != null) {
+                MyData.setCookie(header.getValue());
+            }
+            return rstsrc;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Check the net connection status of the device.
+     *
+     * @param context The context of the program.
+     * @return whether the connection is good.
+     */
     public static boolean isNetworkConnected(Context context) {
         if (context != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -73,56 +106,6 @@ public class NetHelper {
             }
         }
         return false;
-    }
-
-    public static void analysisJSON(String src, String[] keys, Object[] values) {
-        try {
-            JSONObject result = new JSONObject(src);
-            if (result.getString("desc").equals("0")) {
-                for (int i = 0; i < keys.length; i++) {
-                    values[i] = result.get(keys[i]);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public static String requestSignup(String username, String password) throws Exception {
-        HttpPost httpPost = new HttpPost(PATH + "/Act/Reg");
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("Username", username));
-        params.add(new BasicNameValuePair("Password", password));
-        HttpEntity httpEntity = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-        httpPost.setEntity(httpEntity);
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpResponse httpResponse = httpClient.execute(httpPost);
-        if (httpResponse.getStatusLine().getStatusCode() == 200) {
-            String resultsrc = EntityUtils.toString((httpResponse.getEntity()), "UTF-8");
-            Header header = httpResponse.getFirstHeader("Set-Cookie");
-            if (header != null) {
-                MyData.setCookie(header.getValue());
-            }
-            return resultsrc;
-        } else {
-            return null;
-        }
-    }
-
-    public static String requestValue(String values[]) throws Exception {
-        String src = "http://121.40.28.143/api/express.info.php?";
-        src += "express_company=" + values[0] + "&";
-        src += "express_code=" + values[1];
-        HttpGet httpGet = new HttpGet("http://121.40.28.143/api/express.info.php?express_company=shunfeng&express_code=78047288882");
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpResponse httpResponse = httpClient.execute(httpGet);
-        if (httpResponse.getStatusLine().getStatusCode() == 200) {
-            String resultsrc = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-            return resultsrc;
-        } else {
-            return null;
-        }
     }
 
 }
